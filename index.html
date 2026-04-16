@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oluwatobi Abayomi — Frontend Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --background: hsl(0 0% 4%);
+    --foreground: hsl(0 0% 98%);
+    --card: hsl(0 0% 7%);
+    --card-foreground: hsl(0 0% 98%);
+    --muted: hsl(0 0% 15%);
+    --muted-foreground: hsl(0 0% 60%);
+    --accent: hsl(160 60% 45%);
+    --accent-foreground: hsl(0 0% 98%);
+    --border: hsl(0 0% 12%);
+    --surface-elevated: hsl(0 0% 8%);
+    --surface-hover: hsl(0 0% 12%);
+    --radius: 0.625rem;
+    --glow: hsl(160 60% 45%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    overflow-x: hidden;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── VIDEO BG ── */
+  .video-bg {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2;
+    z-index: 0;
+    transform: scale(1.03);
+    filter: saturate(1.05) contrast(1.05);
+    transition: opacity 0.5s ease;
+  }
+
+  /* Static fallback when no video */
+  .video-fallback {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, hsl(160 40% 12% / 0.7) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, hsl(0 0% 6%) 0%, transparent 60%),
+      hsl(0 0% 4%);
+  }
+
+  .video-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, hsl(0 0% 4% / 0.45) 0%, hsl(0 0% 4% / 0.35) 40%, hsl(0 0% 4% / 0.65) 100%),
+      radial-gradient(ellipse 90% 60% at 50% -10%, hsl(160 50% 18% / 0.22) 0%, transparent 65%);
+  }
+
+  /* ── LAYOUT ── */
+  .site-wrap {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .container--narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes line-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out forwards;
+  }
+
+  .fade-up-1 { animation-delay: 0.1s; }
+  .fade-up-2 { animation-delay: 0.25s; }
+  .fade-up-3 { animation-delay: 0.4s; }
+  .fade-up-4 { animation-delay: 0.55s; }
+  .fade-up-5 { animation-delay: 0.7s; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 1rem 1.5rem;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: hsl(0 0% 6% / 0.45);
+    border: 1px solid hsl(0 0% 14% / 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 0.6rem 0.85rem 0.6rem 1rem;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  header.is-scrolled .header-inner {
+    background: hsl(0 0% 6% / 0.65);
+    border-color: hsl(0 0% 18% / 0.8);
+    transform: translateY(-1px);
+  }
+
+  .logo {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--foreground);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .header-nav a {
+    color: var(--muted-foreground);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .header-nav a:hover { color: var(--foreground); }
+
+  .header-cta {
+    background: var(--foreground);
+    color: var(--background);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.5rem 1.125rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .header-cta:hover {
+    background: hsl(0 0% 90%);
+    transform: translateY(-1px);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding-top: 9rem;
+    padding-bottom: 5rem;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: hsl(160 60% 45% / 0.1);
+    border: 1px solid hsl(160 60% 45% / 0.25);
+    border-radius: 100px;
+    padding: 0.3rem 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .hero-eyebrow-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  .hero-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    margin-bottom: 1.25rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-sub {
+    font-size: clamp(1.0625rem, 2vw, 1.25rem);
+    color: var(--muted-foreground);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-sub-2 {
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    font-weight: 400;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-sub-2 strong {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .hero-divider {
+    width: 100%;
+    max-width: 500px;
+    height: 1px;
+    background: hsl(0 0% 98% / 0.08);
+    margin: 0 auto 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--foreground);
+    color: var(--background);
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s, transform 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary:hover {
+    background: hsl(0 0% 90%);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted-foreground);
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-ghost:hover {
+    border-color: hsl(0 0% 30%);
+    color: var(--foreground);
+    transform: translateY(-1px);
+  }
+
+  /* ── SECTION STRUCTURE ── */
+  section {
+    padding: 5rem 0;
+  }
+
+  .section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .section-desc {
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  .section-head {
+    margin-bottom: 3rem;
+  }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ── QUALITIES / WHY SECTION ── */
+  .qualities-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    .qualities-grid { grid-template-columns: 1fr; }
+  }
+
+  .quality-col {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+
+  .quality-col-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .quality-col-title.neg { color: hsl(0 50% 60%); }
+  .quality-col-title.pos { color: var(--accent); }
+
+  .quality-list {
+    list-style: none;
+  }
+
+  .quality-list li {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid hsl(0 0% 12% / 0.6);
+    line-height: 1.5;
+  }
+
+  .quality-list li:last-child { border-bottom: none; }
+
+  /* ── WHAT I BRING ── */
+  .bring-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 700px) {
+    .bring-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (min-width: 701px) and (max-width: 960px) {
+    .bring-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .bring-item {
+    background: var(--card);
+    padding: 1.75rem 1.5rem;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .bring-item:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .bring-item-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0.875rem;
+    display: block;
+  }
+
+  .bring-item-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .bring-item-text {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    line-height: 1.65;
+  }
+
+  /* ── FEATURED PROJECTS ── */
+  .projects-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .project-row {
+    background: var(--card);
+    padding: 2rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: start;
+    transition: background 0.25s ease, transform 0.25s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .project-row:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .project-number {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .project-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.65;
+    max-width: 560px;
+    margin-bottom: 1rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    background: hsl(0 0% 12%);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .tag.accent {
+    color: var(--accent);
+    background: hsl(160 60% 45% / 0.08);
+    border-color: hsl(160 60% 45% / 0.2);
+  }
+
+  .project-link-icon {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-foreground);
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    margin-top: 0.25rem;
+  }
+
+  .project-row:hover .project-link-icon {
+    border-color: hsl(0 0% 35%);
+    color: var(--foreground);
+    transform: translate(2px, -2px);
+  }
+
+  /* ── MORE PROJECTS ── */
+  .more-projects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .more-projects { grid-template-columns: 1fr; }
+  }
+
+  .more-project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.375rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .more-project-card:hover {
+    background: var(--surface-hover);
+    border-color: hsl(0 0% 22%);
+    transform: translateY(-2px);
+  }
+
+  .more-project-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 0.375rem;
+  }
+
+  .more-project-desc {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  /* ── RELEVANCE TABLE ── */
+  .relevance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .relevance-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .relevance-row:last-child { border-bottom: none; }
+
+  .relevance-label {
+    padding: 1.125rem 1.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .relevance-value {
+    padding: 1.125rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    background: var(--surface-elevated);
+    line-height: 1.65;
+  }
+
+  @media (max-width: 600px) {
+    .relevance-row { grid-template-columns: 1fr; }
+    .relevance-label { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  /* ── EXPERIENCE ── */
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .exp-item {
+    padding: 1.75rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .exp-item:last-child { border-bottom: none; }
+  .exp-item:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .exp-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.875rem;
+  }
+
+  .exp-role {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+    line-height: 1.3;
+  }
+
+  .exp-company {
+    font-size: 0.8125rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 0.2rem;
+  }
+
+  .exp-date {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    background: hsl(0 0% 12%);
+    padding: 0.25rem 0.625rem;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .exp-bullets {
+    list-style: none;
+  }
+
+  .exp-bullets li {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    padding: 0.25rem 0 0.25rem 1rem;
+    position: relative;
+  }
+
+  .exp-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: hsl(160 60% 45% / 0.7);
+  }
+
+  /* ── FINAL CTA ── */
+  .cta-section {
+    padding: 5rem 0 6rem;
+    text-align: center;
+  }
+
+  .cta-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    margin-bottom: 0.875rem;
+    line-height: 1.2;
+  }
+
+  .cta-desc {
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    margin-bottom: 2rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-note {
+    font-size: 0.8125rem;
+    color: hsl(0 0% 35%);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--foreground); }
+
+  /* ── MISC ── */
+  .accent-text { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .header-nav { display: none; }
+    .project-row { grid-template-columns: 1fr; }
+    .project-link-icon { display: none; }
+    section { padding: 3.5rem 0; }
+    .relevance-label { font-size: 0.75rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    .fade-up, .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<div class="video-fallback"></div>
+<video id="bgVideo" class="video-bg" autoplay loop muted playsinline preload="metadata" aria-hidden="true">
+  <source src="./background-video.mp4" type="video/mp4">
+</video>
+<div class="video-overlay"></div>
+
+<div class="site-wrap">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">Obi<span>to</span></a>
+      <nav class="header-nav">
+        <a href="#why">Why me</a>
+        <a href="#projects">Work</a>
+        <a href="#fit">Fit</a>
+        <a href="#experience">Experience</a>
+      </nav>
+      <a href="https://calendly.com/dannyobito05" target="_blank" class="header-cta">Book a call</a>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="container--narrow">
+      <div class="hero-eyebrow fade-up fade-up-1">
+        <span class="hero-eyebrow-dot"></span>
+        Applying · Frontend Engineer (Contract) — Aether Legals
+      </div>
+      <h1 class="hero-title fade-up fade-up-2">
+        Oluwatobi Abayomi
+      </h1>
+      <p class="hero-sub fade-up fade-up-3">Frontend Engineer · Full-Stack · 3 YOE</p>
+      <p class="hero-sub-2 fade-up fade-up-3">
+        <strong>React · TypeScript · Tailwind · Next.js</strong> — building interfaces that feel inevitable.
+      </p>
+      <div class="hero-divider fade-up fade-up-4"></div>
+      <div class="hero-actions fade-up fade-up-5">
+        <a href="https://calendly.com/dannyobito05" target="_blank" class="btn-primary">
+          Book a call
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="mailto:dannyobito05@gmail.com" class="btn-ghost">Send an email</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── WHY SECTION ── -->
+  <section id="why">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-label">Why me</span>
+        <h2 class="section-title">You said it yourself.</h2>
+        <p class="section-desc">You're looking for someone who can't let go until the spacing is right, the transitions feel inevitable, and the whole thing looks like it was designed by one very focused mind. Here's where I land.</p>
+      </div>
+
+      <div class="qualities-grid reveal">
+        <div class="quality-col">
+          <div class="quality-col-title neg">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Not what you need
+          </div>
+          <ul class="quality-list">
+            <li>Ships components that just "work" without caring how they feel</li>
+            <li>Follows Figma without questioning information hierarchy</li>
+            <li>Needs to be told what to improve</li>
+            <li>Finds the gap between good and exceptional exhausting</li>
+            <li>No early-stage startup experience</li>
+          </ul>
+        </div>
+        <div class="quality-col">
+          <div class="quality-col-title pos">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M4 7l2.5 2.5L10 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            What you actually get
+          </div>
+          <ul class="quality-list">
+            <li>Rebuilds components not because they're broken, but because they're not quite right yet</li>
+            <li>Contributes to interaction patterns, layout, and information hierarchy — not just execution</li>
+            <li>Led teams at an early-stage startup; self-starter by default</li>
+            <li>Finds the gap interesting. Closes it.</li>
+            <li>Delivered a contract MVP to production in 3 months at Makkan Innovation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bring-grid reveal" style="margin-top: 1.5rem;">
+        <div class="bring-item">
+          <span class="bring-item-icon">⚡</span>
+          <div class="bring-item-title">Execution speed</div>
+          <p class="bring-item-text">Landing pages in a day. 4–5 page sites in 2–3. I bootstrap fast with AI, then apply engineering judgement to perfect. Speed without slop.</p>
+        </div>
+        <div class="bring-item">
+          <span class="bring-item-icon">◈</span>
+          <div class="bring-item-title">System thinking</div>
+          <p class="bring-item-text">I think in component systems, data boundaries, and reuse patterns — not just the current ticket. Architecture decisions I've made are still running in production.</p>
+        </div>
+        <div class="bring-item">
+          <span class="bring-item-icon">✦</span>
+          <div class="bring-item-title">Visual precision</div>
+          <p class="bring-item-text">Near 100% Figma fidelity is my baseline. I notice when spacing is off. I notice when an interaction feels slightly sluggish. I fix it before anyone asks.</p>
+        </div>
+        <div class="bring-item">
+          <span class="bring-item-icon">⟳</span>
+          <div class="bring-item-title">State & data mastery</div>
+          <p class="bring-item-text">TanStack Query for server state, caching, retries, error boundaries. Auth, RBAC, OAuth. Users never get stuck in error states they can't recover from.</p>
+        </div>
+        <div class="bring-item">
+          <span class="bring-item-icon">⊞</span>
+          <div class="bring-item-title">Full-stack awareness</div>
+          <p class="bring-item-text">I've defined schemas, written API endpoints, configured auth flows, and led teams that shipped containerised apps. Backend work doesn't block me.</p>
+        </div>
+        <div class="bring-item">
+          <span class="bring-item-icon">↗</span>
+          <div class="bring-item-title">Ownership without hand-holding</div>
+          <p class="bring-item-text">I've led teams, set git standards, run code reviews, and made architecture calls solo. I bring initiative — not a list of questions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-label">Featured work</span>
+        <h2 class="section-title">Built, shipped, used by real people.</h2>
+        <p class="section-desc">Three projects that show what I mean by precision, system thinking, and production-grade execution.</p>
+      </div>
+
+      <div class="projects-stack reveal">
+
+        <!-- Project 1: Confris -->
+        <a href="https://conferencecycle.com" target="_blank" class="project-row">
+          <div>
+            <div class="project-number">01 — Multi-tenant Platform</div>
+            <div class="project-title">ConferenceCycle (Confris)</div>
+            <p class="project-desc">A multi-tenant conference platform on Next.js. Each conference runs on its own subdomain with isolated data and branding. Organizers manage multiple conferences from a single account. Built with subdomain-aware middleware routing, server/client component boundaries, TanStack Query, and API-driven theming so the same components render correctly per tenant.</p>
+            <div class="project-tags">
+              <span class="tag accent">Next.js App Router</span>
+              <span class="tag">Multi-tenancy</span>
+              <span class="tag">TanStack Query</span>
+              <span class="tag">Dynamic theming</span>
+              <span class="tag">SEO / SSR</span>
+              <span class="tag">TypeScript</span>
+            </div>
+          </div>
+          <div class="project-link-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5l9-9M4 2.5h7.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </a>
+
+        <!-- Project 2: SEO Dashboard -->
+        <a href="https://geniex-seo-dashboard.vercel.app/seo-dashboard" target="_blank" class="project-row">
+          <div>
+            <div class="project-number">02 — Analytics Dashboard</div>
+            <div class="project-title">SEO Intelligence Dashboard</div>
+            <p class="project-desc">A multi-view SEO analytics product with near 100% Figma fidelity. KPI cards drive chart context. Interactive line/bar visualizations, paginated data-rich tables (TanStack), collapsible sidebar, mobile drawer, dark/light mode with localStorage persistence, auth flows. Built as a full product surface — 7 views, not a demo.</p>
+            <div class="project-tags">
+              <span class="tag accent">React + TypeScript</span>
+              <span class="tag">Refine + TanStack</span>
+              <span class="tag">Recharts</span>
+              <span class="tag">Dark/light mode</span>
+              <span class="tag">Auth flows</span>
+              <span class="tag">Figma fidelity</span>
+            </div>
+          </div>
+          <div class="project-link-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5l9-9M4 2.5h7.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </a>
+
+        <!-- Project 3: Email Marketing Dashboard -->
+        <a href="https://email-marketing-dashboard.vercel.app/segmentation-analysis?client=brand-boost" target="_blank" class="project-row">
+          <div>
+            <div class="project-number">03 — Marketing Analytics Suite</div>
+            <div class="project-title">Email Marketing Dashboard</div>
+            <p class="project-desc">A complete marketing performance platform covering executive reporting, campaign performance, flow analytics, segmentation, deliverability, and action insights — 7 sections. URL-driven filter state (client, dateRange) for shareable views. Client-aware mock data generation with configurable multipliers. Clear separation between data components and UI. Production Refine patterns throughout.</p>
+            <div class="project-tags">
+              <span class="tag accent">React + TypeScript</span>
+              <span class="tag">Refine</span>
+              <span class="tag">URL state</span>
+              <span class="tag">Multi-tenant data</span>
+              <span class="tag">Executive dashboards</span>
+            </div>
+          </div>
+          <div class="project-link-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5l9-9M4 2.5h7.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- More projects -->
+      <div style="margin-top: 3rem;" class="reveal">
+        <div class="section-head" style="margin-bottom: 1.25rem;">
+          <span class="section-label">More work</span>
+          <p class="section-desc" style="font-size:0.875rem;">A few more things worth mentioning. There's more — reach out and I'll walk you through it.</p>
+        </div>
+        <div class="more-projects">
+          <a href="https://www.nrev360.com/" target="_blank" class="more-project-card">
+            <div class="more-project-title">nrev360.com — Marketing Landing Page</div>
+            <p class="more-project-desc">Built and deployed in ~1 day. Responsive, production-ready, pixel-clean.</p>
+          </a>
+          <a href="https://ot-wise.vercel.app/" target="_blank" class="more-project-card">
+            <div class="more-project-title">OTWise — Product Landing Page</div>
+            <p class="more-project-desc">Initial shipping version for a real product, built in a day. Became the live site before a rebrand: otwiseai.com</p>
+          </a>
+          <a href="https://jrb-admin-portal-mock.vercel.app/taxpayers/individual/1234567890" target="_blank" class="more-project-card">
+            <div class="more-project-title">JRB Admin Portal — Enterprise UI</div>
+            <p class="more-project-desc">Government-grade admin system. I defined requirements, wireframes, and component scaffold. Initial iteration shipped in 3 days for client feedback, with no designer.</p>
+          </a>
+          <a href="https://taxidservice.jrb.gov.ng/" target="_blank" class="more-project-card">
+            <div class="more-project-title">TIN Verification Portal — Gov Production</div>
+            <p class="more-project-desc">Live government portal. Built solo under competitive pressure in ~1.5 days. Serving real users in production.</p>
+          </a>
+        </div>
+
+        <div style="text-align:center; margin-top: 1.5rem;">
+          <a href="mailto:dannyobito05@gmail.com" class="btn-ghost" style="font-size:0.875rem;">
+            Want to see more? Get in touch
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── FIT SECTION ── -->
+  <section id="fit">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-label">Role fit</span>
+        <h2 class="section-title">Mapped to what you asked for.</h2>
+        <p class="section-desc">You described specific capabilities. Here's where I stand on each one, without padding.</p>
+      </div>
+
+      <div class="relevance-list reveal">
+        <div class="relevance-row">
+          <div class="relevance-label">Product interfaces & dashboards</div>
+          <div class="relevance-value">I've built analytics suites, admin portals, and SaaS apps with dense data layouts, multi-view navigation, and interactive chart logic. The SEO and email marketing dashboards are direct examples.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">Document & upload flows</div>
+          <div class="relevance-value">I've implemented file upload flows with state management, error handling, and user feedback across multiple projects. Multipart uploads, progress states, validation feedback — done this in production.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">AI analysis views</div>
+          <div class="relevance-value">I think carefully about how to present complex outputs to non-technical users — hierarchy, progressive disclosure, summary vs. detail. My dashboard work shows this. I'm genuinely interested in the challenge AI output presentation creates.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">Supabase / backend APIs</div>
+          <div class="relevance-value">I've worked with Supabase (auth, storage, queries). Strong experience with SQL schema design, REST APIs, Node.js / Express backends, and auth including OAuth and RBAC. I don't know Trigger.dev but I'm fast to pick up tools like this.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">State management & error handling</div>
+          <div class="relevance-value">TanStack Query is my default for server state — caching, retries, background refetch, error boundaries. Users don't get stuck. I care about what happens when things go wrong, not just the happy path.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">UI/UX contribution</div>
+          <div class="relevance-value">I've made layout, hierarchy, and interaction decisions without a designer — on the JRB portal, on the email marketing suite, on multiple contract projects. I push back when something doesn't serve the user, even when it's in the Figma.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">Git, code review, collaboration</div>
+          <div class="relevance-value">I've set up and enforced Git workflows that cut merge conflicts by 70% at Makkan. I run code reviews and hold a quality bar. I've led teams of 4–5 developers.</div>
+        </div>
+        <div class="relevance-row">
+          <div class="relevance-label">Early-stage startup experience</div>
+          <div class="relevance-value">Led a frontend team at Makkan Innovation (contract, scoped delivery), worked at Intenttech, and taken on contract work at multiple early-stage companies. I'm used to ambiguity, fast cycles, and real user feedback within days.</div>
+        </div>
+        <div class="relevance-row" style="border-bottom:none">
+          <div class="relevance-label">React + TypeScript</div>
+          <div class="relevance-value">This is my primary tool. Strict types, custom hooks, clean component boundaries, performance-aware rendering. It's what I reach for first and what I've used in every production project in the last 2 years.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── EXPERIENCE ── -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-label">Experience</span>
+        <h2 class="section-title">Where I've shipped real things.</h2>
+      </div>
+
+      <div class="exp-list reveal">
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div>
+              <div class="exp-role">Frontend Engineer (Freelance)</div>
+              <div class="exp-company">Geniex — Remote, India</div>
+            </div>
+            <span class="exp-date">Oct 2025 – Present</span>
+          </div>
+          <ul class="exp-bullets">
+            <li>Built full email-marketing analytics platform: 7 dashboards, 12+ data visualizations (Recharts, D3, react-simple-maps)</li>
+            <li>Engineered component system and theming architecture with strict TypeScript</li>
+            <li>Near 100% Figma fidelity, mobile-first responsive throughout</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div>
+              <div class="exp-role">Frontend / Fullstack Engineer</div>
+              <div class="exp-company">Datalytix — Lagos, Nigeria</div>
+            </div>
+            <span class="exp-date">Mar 2025 – Present</span>
+          </div>
+          <ul class="exp-bullets">
+            <li>Owned frontend architecture and requirements translation for major government portals</li>
+            <li>Built TIN Verification Portal solo under competitive pressure; initial version in ~1.5 days, live in production</li>
+            <li>Fleet Management SaaS (React, Node.js, MSSQL, Docker, Entra ID) — vehicle tracking, trip management, reporting</li>
+            <li>Led a 5-dev team delivering enterprise admin portal with MSAL/Entra auth, Microsoft chatbot integration, and full architecture ownership</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div>
+              <div class="exp-role">Frontend Developer</div>
+              <div class="exp-company">Intenttech — Remote, UK</div>
+            </div>
+            <span class="exp-date">Jan 2025 – Mar 2025</span>
+          </div>
+          <ul class="exp-bullets">
+            <li>Shipped features across 2 production apps in React and Next.js</li>
+            <li>API integration with TanStack Query for reliable server-state synchronization</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div>
+              <div class="exp-role">Frontend Developer Team Lead (Contract)</div>
+              <div class="exp-company">Makkan Innovation — Remote</div>
+            </div>
+            <span class="exp-date">Sep 2024 – Dec 2024</span>
+          </div>
+          <ul class="exp-bullets">
+            <li>Led 4-developer team delivering real-estate marketplace MVP and admin dashboard in React + TypeScript</li>
+            <li>Set up Git workflow standards that reduced merge conflicts by 70%</li>
+            <li>Owned client/server state architecture; fixed major performance bottlenecks before first client demo</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div>
+              <div class="exp-role">Frontend Developer (Freelance)</div>
+              <div class="exp-company">Pysis Technologies — Remote</div>
+            </div>
+            <span class="exp-date">Jan 2024 – May 2024</span>
+          </div>
+          <ul class="exp-bullets">
+            <li>Onboarded into existing codebase; built Figma designs and implemented key features including REST API integration and Zustand state management for FishDey marketplace MVP</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── FINAL CTA ── -->
+  <section class="cta-section">
+    <div class="container--narrow">
+      <div class="reveal">
+        <span class="section-label" style="display:block; text-align:center; margin-bottom:1rem;">Let's talk</span>
+        <h2 class="cta-title">Ready when you are.</h2>
+        <p class="cta-desc">If this is close to what you're looking for, I'd rather spend 20 minutes on a call than another round of emails. I'm available now and can start quickly.</p>
+        <div class="cta-actions">
+          <a href="https://calendly.com/dannyobito05" target="_blank" class="btn-primary">
+            Book a 20-min call
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="mailto:dannyobito05@gmail.com" class="btn-ghost">dannyobito05@gmail.com</a>
+        </div>
+        <p class="cta-note">github.com/dannyobito · linkedin.com/in/oluwatobi-abayomi</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Oluwatobi Abayomi</span>
+      <div class="footer-links">
+        <a href="https://github.com/dannyobito" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/oluwatobi-abayomi" target="_blank">LinkedIn</a>
+        <a href="mailto:dannyobito05@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Video fallback handling
+  const bgVideo = document.getElementById('bgVideo');
+  if (bgVideo) {
+    const hideVideo = () => {
+      bgVideo.style.opacity = '0';
+      bgVideo.style.visibility = 'hidden';
+    };
+    bgVideo.addEventListener('error', hideVideo);
+    bgVideo.addEventListener('stalled', hideVideo);
+    bgVideo.play().catch(() => {
+      // Autoplay may fail in some environments; fallback remains visible.
+      hideVideo();
+    });
+  }
+
+  // Header polish on scroll
+  const headerEl = document.querySelector('header');
+  const syncHeaderState = () => {
+    if (!headerEl) return;
+    if (window.scrollY > 8) headerEl.classList.add('is-scrolled');
+    else headerEl.classList.remove('is-scrolled');
+  };
+  syncHeaderState();
+  window.addEventListener('scroll', syncHeaderState, { passive: true });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // stagger children if it's a grid
+        const children = entry.target.querySelectorAll('.bring-item, .quality-col, .project-row, .relevance-row, .exp-item, .more-project-card');
+        children.forEach((child, i) => {
+          child.style.transitionDelay = `${i * 0.06}s`;
+        });
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
