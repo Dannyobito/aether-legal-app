@@ -212,8 +212,12 @@
 
   /* ── HERO ── */
   .hero {
-    padding-top: 9rem;
-    padding-bottom: 5rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 7.5rem;
+    padding-bottom: 3rem;
     text-align: center;
   }
 
@@ -295,6 +299,39 @@
     flex-wrap: wrap;
   }
 
+  .hero-impact {
+    margin: 2rem auto 0;
+    max-width: 740px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .hero-impact-item {
+    background: hsl(0 0% 7% / 0.7);
+    border: 1px solid hsl(0 0% 14% / 0.8);
+    border-radius: var(--radius);
+    padding: 0.8rem 0.9rem;
+  }
+
+  .hero-impact-value {
+    display: block;
+    font-size: 1rem;
+    line-height: 1.1;
+    font-weight: 650;
+    color: var(--foreground);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-impact-label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
   .btn-primary {
     background: var(--foreground);
     color: var(--background);
@@ -340,6 +377,12 @@
     border-color: hsl(0 0% 30%);
     color: var(--foreground);
     transform: translateY(-1px);
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid hsl(160 60% 45% / 0.85);
+    outline-offset: 3px;
+    border-radius: 8px;
   }
 
   /* ── SECTION STRUCTURE ── */
@@ -490,6 +533,22 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
+  }
+
+  .project-relevance-note {
+    margin-bottom: 1.25rem;
+    background: hsl(160 60% 45% / 0.08);
+    border: 1px solid hsl(160 60% 45% / 0.2);
+    border-radius: var(--radius);
+    padding: 0.875rem 1rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: hsl(0 0% 88%);
+  }
+
+  .project-relevance-note strong {
+    color: var(--accent);
+    font-weight: 650;
   }
 
   .project-row {
@@ -826,6 +885,12 @@
     .project-link-icon { display: none; }
     section { padding: 3.5rem 0; }
     .relevance-label { font-size: 0.75rem; }
+    .hero {
+      min-height: 100vh;
+      padding-top: 6.5rem;
+      padding-bottom: 2rem;
+    }
+    .hero-impact { grid-template-columns: 1fr; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -887,6 +952,20 @@
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a href="mailto:dannyobito05@gmail.com" class="btn-ghost">Send an email</a>
+      </div>
+      <div class="hero-impact fade-up fade-up-5">
+        <div class="hero-impact-item">
+          <span class="hero-impact-value">7-section suites</span>
+          <span class="hero-impact-label">Data-heavy products shipped</span>
+        </div>
+        <div class="hero-impact-item">
+          <span class="hero-impact-value">Near-100%</span>
+          <span class="hero-impact-label">Figma-to-code fidelity</span>
+        </div>
+        <div class="hero-impact-item">
+          <span class="hero-impact-value">&lt; 3 months</span>
+          <span class="hero-impact-label">Contract MVP delivered</span>
+        </div>
       </div>
     </div>
   </section>
@@ -976,6 +1055,8 @@
         <h2 class="section-title">Built, shipped, used by real people.</h2>
         <p class="section-desc">Three projects that show what I mean by precision, system thinking, and production-grade execution.</p>
       </div>
+
+      <p class="project-relevance-note reveal"><strong>Why this matters for Aether:</strong> these projects reflect the same UI demands you called out — high-stakes user journeys, complex analysis made legible, and interfaces where precision in hierarchy, spacing, and transitions directly impacts trust.</p>
 
       <div class="projects-stack reveal">
 
@@ -1222,10 +1303,10 @@
       <div class="reveal">
         <span class="section-label" style="display:block; text-align:center; margin-bottom:1rem;">Let's talk</span>
         <h2 class="cta-title">Ready when you are.</h2>
-        <p class="cta-desc">If this is close to what you're looking for, I'd rather spend 20 minutes on a call than another round of emails. I'm available now and can start quickly.</p>
+        <p class="cta-desc">If this is close to what you're looking for, and you would rather have a call than another round of emails, I'm available now and can start quickly.</p>
         <div class="cta-actions">
           <a href="https://calendly.com/dannyobito05" target="_blank" class="btn-primary">
-            Book a 20-min call
+            Book a 30-min call
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
           <a href="mailto:dannyobito05@gmail.com" class="btn-ghost">dannyobito05@gmail.com</a>
